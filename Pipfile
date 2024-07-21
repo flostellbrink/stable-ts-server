@@ -10,7 +10,7 @@ stable-ts = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.12"
+python_version = "3.10"
 
 [scripts]
 dev = " fastapi dev main.py"
