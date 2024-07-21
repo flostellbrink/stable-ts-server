@@ -9,7 +9,7 @@ See [OpenAPI Documentation](https://redocly.github.io/redoc/?url=https://raw.git
 Model is one of: 'tiny', 'tiny.en', 'base', 'base.en', 'small', 'small.en', 'medium', 'medium.en', 'large-v1', 'large-v2', 'large-v3', or 'large'
 
 ```bash
-docker run -e MODEL="large-v3" -v /app/.cache/whisper -p 8080:8080 flostellbrink/stable-ts-server
+docker run -d --gpus all --name stable-ts-server -e MODEL="base" -v /app/.cache/whisper -p 8080:80 ghcr.io/flostellbrink/stable-ts-server:main
 ```
 
 ## Build
