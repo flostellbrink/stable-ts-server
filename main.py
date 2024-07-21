@@ -76,15 +76,15 @@ def toStandardLocateResult(result: stable_whisper.result.Segment) -> LocateResul
 
 app = FastAPI()
 
+model_name = os.environ.get("MODEL", "base")
+model = stable_whisper.load_model(model_name)
+
 @app.post("/api/align", response_model=WhisperResult)
 async def align_text_with_audio(audio: UploadFile, text: UploadFile, language: Annotated[str, Form(examples=["en"])]):
     audioRaw = await audio.read()
     textRaw = await text.read()
     textUtf8 = textRaw.decode("utf-8")
 
-    model_name = os.environ.get("MODEL", "base")
-    model = stable_whisper.load_model(model_name)
-    
     alignment = stable_whisper.alignment.align(model, audioRaw, textUtf8, language=language, fast_mode=True)
     return toStandardWhisperResult(alignment, language)
 
@@ -92,13 +92,10 @@ async def align_text_with_audio(audio: UploadFile, text: UploadFile, language: A
 async def locate_text_in_audio(audio: UploadFile, text: Annotated[str, Form(examples=["Chapter Heading"])], language: Annotated[str, Form(examples=["en"])]):
     audioRaw = await audio.read()
 
-    model_name = os.environ.get("MODEL", "base")
-    model = stable_whisper.load_model(model_name)
-    
     alignments = stable_whisper.alignment.locate(model, audioRaw, text, language=language)
     if alignments is None or len(alignments) == 0:
         return None
-    
+
     return toStandardLocateResult(alignments[0])
 
 with open('openapi.json', 'w') as f:
