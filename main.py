@@ -30,7 +30,7 @@ class WhisperResult(BaseModel):
     segments: list[WhisperSegment]
     language: str
 
-def toStandardWhisperResult(result: stable_whisper.result.WhisperResult) -> WhisperResult:
+def toStandardWhisperResult(result: stable_whisper.result.WhisperResult, language: str) -> WhisperResult:
     return WhisperResult(
         text=result.text,
         segments=[
@@ -57,7 +57,7 @@ def toStandardWhisperResult(result: stable_whisper.result.WhisperResult) -> Whis
             )
             for i, segment in enumerate(result.segments)
         ],
-        language=result.language
+        language=language
     )
 
 app = FastAPI()
@@ -72,7 +72,7 @@ async def align_text_with_audio(audio: UploadFile, text: UploadFile, language: A
     model = stable_whisper.load_model(model_name)
 
     alignment: stable_whisper.result.WhisperResult = model.align(audioRaw, textUtf8, language=language, fast_mode=True)
-    return toStandardWhisperResult(alignment)
+    return toStandardWhisperResult(alignment, language)
 
 
 
