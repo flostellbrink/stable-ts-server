@@ -28,6 +28,7 @@ class WhisperSegment(BaseModel):
 class WhisperResult(BaseModel):
     text: str
     segments: list[WhisperSegment]
+    language: str
 
 def toStandardWhisperResult(result: stable_whisper.result.WhisperResult) -> WhisperResult:
     return WhisperResult(
@@ -55,7 +56,8 @@ def toStandardWhisperResult(result: stable_whisper.result.WhisperResult) -> Whis
                 ]
             )
             for i, segment in enumerate(result.segments)
-        ]
+        ],
+        language=result.language
     )
 
 app = FastAPI()
