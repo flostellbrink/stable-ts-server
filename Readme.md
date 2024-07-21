@@ -2,7 +2,7 @@
 
 Exposes [stable-ts](https://github.com/jianfch/stable-ts) align api as a service.
 
-See [OpenAPI Documentation](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/flostellbrink/stable-ts-server/main/openapi.json) for more information.
+See [OpenAPI Documentation](https://redocly.github.io/redoc/?url=https://raw.githubusercontent.com/flostellbrink/stable-ts-server/main/openapi.json&nocors) for more information.
 
 ## Usage
 
