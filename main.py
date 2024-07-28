@@ -1,6 +1,6 @@
 import os
 import stable_whisper
-from typing import Annotated, Union
+from typing import Annotated
 from pydantic import BaseModel
 from fastapi import FastAPI, UploadFile, Form
 from fastapi.openapi.utils import get_openapi
@@ -88,15 +88,12 @@ async def align_text_with_audio(audio: UploadFile, text: UploadFile, language: A
     alignment = stable_whisper.alignment.align(model, audioRaw, textUtf8, language=language, fast_mode=True)
     return toStandardWhisperResult(alignment, language)
 
-@app.post("/api/locate", response_model=Union[LocateResult, None])
-async def locate_text_in_audio(audio: UploadFile, text: Annotated[str, Form(examples=["Chapter Heading"])], language: Annotated[str, Form(examples=["en"])]):
+@app.post("/api/transcribe", response_model=WhisperResult)
+async def transcribe_audio(audio: UploadFile, language: Annotated[str, Form(examples=["en"])]):
     audioRaw = await audio.read()
-
-    alignments = stable_whisper.alignment.locate(model, audioRaw, text, language=language)
-    if alignments is None or len(alignments) == 0:
-        return None
-
-    return toStandardLocateResult(alignments[0])
+    
+    transcription = model.transcribe(audioRaw, language=language)
+    return toStandardWhisperResult(transcription, language)
 
 with open('openapi.json', 'w') as f:
     json.dump(get_openapi(
