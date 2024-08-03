@@ -80,7 +80,7 @@ model_name = os.environ.get("MODEL", "base")
 model = stable_whisper.load_model(model_name)
 
 @app.post("/api/align", response_model=WhisperResult)
-async def align_text_with_audio(audio: UploadFile, text: UploadFile, language: Annotated[str, Form(examples=["en"])], fast_mode: Annotated[bool, Form(default=True)]):
+async def align_text_with_audio(audio: UploadFile, text: UploadFile, language: Annotated[str, Form(examples=["en"])], fast_mode: Annotated[bool, Form()] = False):
     audioRaw = await audio.read()
     textRaw = await text.read()
     textUtf8 = textRaw.decode("utf-8")
