@@ -107,7 +107,7 @@ async def align_text_with_audio(audio: UploadFile, text: UploadFile, language: A
     stable_whisper.alignment.refine(model, audioRaw, alignment, inplace=True)
     print(f"Refine Quality: {resultQuality(alignment)}")
 
-    alignment.adjust_by_silence()
+    alignment.adjust_by_silence(audioRaw)
     print(f"Adjust Quality: {resultQuality(alignment)}")
 
     return toStandardWhisperResult(alignment, language)
