@@ -102,6 +102,14 @@ async def align_text_with_audio(audio: UploadFile, text: UploadFile, language: A
     textUtf8 = textRaw.decode("utf-8")
 
     alignment = stable_whisper.alignment.align(model, audioRaw, textUtf8, language=language, fast_mode=fast_mode)
+    print(f"Align Quality: {resultQuality(alignment)}")
+
+    stable_whisper.alignment.refine(model, audioRaw, alignment, inplace=True)
+    print(f"Refine Quality: {resultQuality(alignment)}")
+
+    alignment.adjust_by_silence()
+    print(f"Adjust Quality: {resultQuality(alignment)}")
+
     return toStandardWhisperResult(alignment, language)
 
 @app.post("/api/transcribe", response_model=WhisperResult)
