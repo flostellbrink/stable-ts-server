@@ -96,12 +96,12 @@ model_name = os.environ.get("MODEL", "large-v3-turbo")
 model = stable_whisper.load_model(model_name)
 
 @app.post("/api/align", response_model=WhisperResult)
-async def align_text_with_audio(audio: UploadFile, text: UploadFile, language: Annotated[str, Form(examples=["en"])], fast_mode: Annotated[bool, Form()] = False):
+async def align_text_with_audio(audio: UploadFile, text: UploadFile, language: Annotated[str, Form(examples=["en"])], fast_mode: Annotated[bool, Form()] = False, failure_threshold: Annotated[float, Form()] = 0.1):
     audioRaw = await audio.read()
     textRaw = await text.read()
     textUtf8 = textRaw.decode("utf-8")
 
-    alignment = stable_whisper.alignment.align(model, audioRaw, textUtf8, language=language, fast_mode=fast_mode)
+    alignment = stable_whisper.alignment.align(model, audioRaw, textUtf8, language=language, fast_mode=fast_mode, failure_threshold=failure_threshold)
     print(f"Align Quality: {resultQuality(alignment)}")
 
     stable_whisper.alignment.refine(model, audioRaw, alignment, inplace=True)
