@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from fastapi import FastAPI, UploadFile, Form
 from fastapi.openapi.utils import get_openapi
 import json
+import whisper
 
 import stable_whisper.alignment
 import stable_whisper.audio
@@ -76,7 +77,11 @@ def toStandardLocateResult(result: stable_whisper.result.Segment) -> LocateResul
 
 app = FastAPI()
 
-model_name = os.environ.get("MODEL", "base")
+print("Available models:")
+for model_name in whisper.available_models():
+    print(f"  {model_name}")
+
+model_name = os.environ.get("MODEL", "large-v3-turbo")
 model = stable_whisper.load_model(model_name)
 
 @app.post("/api/align", response_model=WhisperResult)
