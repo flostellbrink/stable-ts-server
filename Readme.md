@@ -18,3 +18,9 @@ docker run -d --gpus all --name stable-ts-server -e MODEL="base" -v /app/.cache/
 pipenv install
 pipenv run dev
 ```
+
+## Update
+
+Update packages, then run `update-lockfile.sh`.
+This creates a lockfile for arm64 linux, with cuda 118, and python 3.10.
+Any other combination will not work in production.
