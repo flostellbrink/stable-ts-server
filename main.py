@@ -31,12 +31,23 @@ class WhisperSegment(BaseModel):
     words: list[WhisperWord]
 
 class WhisperResult(BaseModel):
+    quality: float
     text: str
     segments: list[WhisperSegment]
     language: str
 
+def wordQuality(word: stable_whisper.result.WordTiming) -> float:
+    return 0 if word.start >= word.end else word.probability
+
+def segmentQuality(segment: stable_whisper.result.Segment) -> float:
+    return sum(wordQuality(word) for word in segment.words) / len(segment.words)
+
+def resultQuality(result: stable_whisper.result.WhisperResult) -> float:
+    return sum(segmentQuality(segment) for segment in result.segments) / len(result.segments)
+
 def toStandardWhisperResult(result: stable_whisper.result.WhisperResult, language: str) -> WhisperResult:
     return WhisperResult(
+        quality=resultQuality(result),
         text=result.text,
         segments=[
             WhisperSegment(
